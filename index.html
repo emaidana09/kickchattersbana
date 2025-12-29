@@ -2,188 +2,46 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>TOP CHATTERS</title>
+    <title>TOP CHATTERS GLOBAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <link rel="shortcut icon" href="imagenes/banafavicon.png" type="image/x-icon">
+    
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
-        :root {
-            --bg-color: #0b0e0f;
-            --card-bg: #14171a;
-            --text-color: #ffffff;
-            --neon-green: #53fc18;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0; padding: 20px;
-            height: 100vh;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-
+        :root { --bg-color: #0b0e0f; --card-bg: #14171a; --text-color: #ffffff; --neon-green: #53fc18; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; height: 100vh; overflow: hidden; box-sizing: border-box; }
         .decoracion { position: fixed; z-index: -1; opacity: 0.5; pointer-events: none; }
         .deco-flores { top: -40px; right: -40px; width: 280px; transform: rotate(10deg); }
         .deco-shadow { bottom: 0; left: 0; width: 120px; }
         .deco-bob { bottom: 0; right: 0; width: 120px; }
-
-        .dashboard-container {
-            display: flex;
-            gap: 20px;
-            height: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding-bottom: 40px; 
-        }
-
-        .left-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .right-panel {
-            flex: 1;
-            background: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid #333;
-            min-width: 350px;
-        }
-
-        h1 { 
-            font-family: 'Anton', sans-serif; 
-            font-size: 3em; 
-            margin: 10px 0 0 0; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-        }
-        
-        .subtitle { 
-            color: #888; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            text-transform: uppercase; 
-        }
-
-        #streamer-avatar {
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            border: 3px solid var(--neon-green);
-            object-fit: cover;
-            background-color: #333;
-        }
-
-        .top-grinder-box {
-            background: linear-gradient(145deg, #1a1a1a, #000);
-            width: 90%;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 4px solid transparent;
-            animation: border-rgb 4s infinite linear;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .grinder-title {
-            font-family: 'Anton', sans-serif;
-            font-size: 1.8em;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
-            background-size: 400%;
-            -webkit-background-clip: text;
-            color: transparent;
-            animation: text-rgb 10s linear infinite;
-        }
-
-        .grinder-avatar {
-            width: 90px; height: 90px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-
-        .grinder-name {
-            font-size: 2.2em; font-weight: bold; display: block; margin-top: 5px;
-        }
-
-        .grinder-score {
-            font-size: 1.3em; color: var(--neon-green); font-weight: bold;
-        }
-
+        .dashboard-container { display: flex; gap: 20px; height: 100%; max-width: 1600px; margin: 0 auto; padding-bottom: 40px; }
+        .left-panel { flex: 1; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding-right: 10px; }
+        .right-panel { flex: 1; background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 2px solid #333; min-width: 350px; }
+        h1 { font-family: 'Anton', sans-serif; font-size: 3em; margin: 10px 0 0 0; text-transform: uppercase; letter-spacing: 2px; }
+        .subtitle { color: #888; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+        #streamer-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--neon-green); object-fit: cover; background-color: #333; }
+        .top-grinder-box { background: linear-gradient(145deg, #1a1a1a, #000); width: 90%; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; border: 4px solid transparent; animation: border-rgb 4s infinite linear; box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative; }
+        .grinder-title { font-family: 'Anton', sans-serif; font-size: 1.8em; margin-bottom: 10px; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); background-size: 400%; -webkit-background-clip: text; color: transparent; animation: text-rgb 10s linear infinite; }
+        .grinder-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .grinder-name { font-size: 2.2em; font-weight: bold; display: block; margin-top: 5px; }
+        .grinder-score { font-size: 1.3em; color: var(--neon-green); font-weight: bold; }
         #ranking-list { width: 100%; }
-
-        .user-row {
-            display: flex; align-items: center;
-            background: var(--card-bg);
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            border-left: 4px solid #333;
-            transition: transform 0.2s;
-        }
+        .user-row { display: flex; align-items: center; background: var(--card-bg); padding: 10px 15px; margin-bottom: 8px; border-radius: 10px; border-left: 4px solid #333; transition: transform 0.2s; }
         .user-row:hover { transform: translateX(5px); border-left-color: var(--neon-green); }
-
         .rank-num { font-family: 'Anton', sans-serif; width: 35px; font-size: 1.4em; color: #555; text-align: center; }
         .user-avatar-small { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; border: 2px solid #333; }
         .user-info { flex-grow: 1; font-weight: 600; font-size: 1.1em; }
         .count-badge { background: #000; padding: 5px 12px; border-radius: 10px; color: var(--neon-green); font-weight: bold; }
-
         iframe { width: 100%; height: 100%; border: none; }
-
-        
-        .footer-container {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            z-index: 100;
-            pointer-events: none;
-        }
-        
-        .footer-content {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(5px);
-            border: 1px solid #333;
-        }
-
-        .footer-text {
-            font-size: 0.8em;
-            color: #888;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .footer-avatar {
-            width: 25px; 
-            height: 25px; 
-            border-radius: 50%;
-            border: 1px solid #666;
-        }
-
+        .footer-container { position: fixed; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 100; pointer-events: none; }
+        .footer-content { background: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px; backdrop-filter: blur(5px); border: 1px solid #333; }
+        .footer-text { font-size: 0.8em; color: #888; font-weight: 600; letter-spacing: 1px; }
+        .footer-avatar { width: 25px; height: 25px; border-radius: 50%; border: 1px solid #666; }
         @keyframes text-rgb { 0% { background-position: 0%; } 100% { background-position: 400%; } }
-        @keyframes border-rgb { 
-            0% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
-            33% { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.3); } 
-            66% { border-color: #0000ff; box-shadow: 0 0 20px rgba(0,0,255,0.3); }
-            100% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
-        }
+        @keyframes border-rgb { 0% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.3); } 33% { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.3); } 66% { border-color: #0000ff; box-shadow: 0 0 20px rgba(0,0,255,0.3); } 100% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255,0,0,0.3); } }
     </style>
 </head>
 <body>
@@ -201,7 +59,7 @@
         <div id="top-grinder-display"></div>
 
         <div id="ranking-list">
-            <div style="text-align:center; padding:30px; color:#555;">Esperando datos...</div>
+            <div style="text-align:center; padding:30px; color:#555;">Cargando Ranking Global... ☁️</div>
         </div>
     </div>
 
@@ -213,43 +71,68 @@
 <div class="footer-container">
     <div class="footer-content">
         <img src="imagenes/ema.png" class="footer-avatar" alt="Dev">
-        <span class="footer-text">© 2026 - emaidana09 </span>
+        <span class="footer-text">© 2026 emaidana09</span>
     </div>
 </div>
 
 <script>
+    // --- 1. CONEXIÓN A TU FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDssFUpL9-gsVtWVJSKuPNnjyVPi50sE0o",
+        authDomain: "kickchattersbana.firebaseapp.com",
+        projectId: "kickchattersbana",
+        storageBucket: "kickchattersbana.firebasestorage.app",
+        messagingSenderId: "93447155288",
+        appId: "1:93447155288:web:fabf230109ed469ca0642d",
+        measurementId: "G-E176MW1JP5",
+        // He calculado esta URL por defecto, si falla revisa en Firebase
+        databaseURL: "https://kickchattersbana-default-rtdb.firebaseio.com"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+    
+    // --- 2. CONFIGURACIÓN KICK ---
     const CHATROOM_ID = '25078682';
     const CHANNEL_SLUG = 'Bananirou';
     const MI_FOTO_PERSONALIZADA = 'imagenes/banan.jpg'; 
     const KICK_PUSHER_KEY = '32cbd69e4b950bf97679';
     const CLUSTER = 'us2';
 
-    let chatStats = JSON.parse(localStorage.getItem('kick_top_v4_stats')) || {};
-
+    // --- 3. LÓGICA ---
     document.getElementById('channel-name-display').textContent = CHANNEL_SLUG.toUpperCase();
 
     const streamerImg = document.getElementById('streamer-avatar');
-    if(MI_FOTO_PERSONALIZADA) {
-        streamerImg.src = MI_FOTO_PERSONALIZADA;
-    } else {
-        streamerImg.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${CHANNEL_SLUG}&backgroundColor=b6e3f4`;
-    }
+    if(MI_FOTO_PERSONALIZADA) streamerImg.src = MI_FOTO_PERSONALIZADA;
+    else streamerImg.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${CHANNEL_SLUG}&backgroundColor=b6e3f4`;
 
+    // VARIABLES
+    let chatStats = {};
+    const statsRef = db.ref('ranking_global');
+    
+    // A. ESCUCHAR CAMBIOS EN LA NUBE (Lectura)
+    statsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        chatStats = data || {};
+        actualizarUI();
+    });
+
+    // B. ESCUCHAR KICK Y ESCRIBIR EN LA NUBE (Escritura)
     const pusher = new Pusher(KICK_PUSHER_KEY, { cluster: CLUSTER, encrypted: true });
     const channel = pusher.subscribe(`chatrooms.${CHATROOM_ID}.v2`);
-
-    pusher.connection.bind('connected', () => {
-        if (Object.keys(chatStats).length > 0) actualizarUI();
-    });
 
     channel.bind('App\\Events\\ChatMessageEvent', function(data) {
         const msg = typeof data === 'string' ? JSON.parse(data) : data;
         const user = msg.sender.username;
         if (['BotRix','Nightbot','StreamElements'].includes(user)) return;
 
-        chatStats[user] = (chatStats[user] || 0) + 1;
-        localStorage.setItem('kick_top_v4_stats', JSON.stringify(chatStats));
-        actualizarUI();
+        // Sumar +1 directamente en la nube
+        const userRef = db.ref('ranking_global/' + user);
+        userRef.transaction((current_value) => {
+            return (current_value || 0) + 1;
+        });
     });
 
     function actualizarUI() {
@@ -264,7 +147,10 @@
         listContainer.innerHTML = '';
         topContainer.innerHTML = '';
 
-        if(sorted.length === 0) return;
+        if(sorted.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#555;">Esperando datos...</div>';
+            return;
+        }
 
         const top1 = sorted[0];
         const avatarTop1 = `https://api.dicebear.com/7.x/adventurer/svg?seed=${top1.name}&backgroundColor=b6e3f4`;
@@ -293,8 +179,19 @@
         }
     }
     
-    window.reset = function(){
-        if(confirm("¿Resetear?")) { localStorage.removeItem('kick_top_v4_stats'); location.reload(); }
+    // Función para restaurar tus puntos viejos
+    window.subirPuntosViejos = function(jsonString) {
+        if(!jsonString) return console.log("Pon el JSON entre los paréntesis!");
+        const data = JSON.parse(jsonString);
+        db.ref('ranking_global').update(data);
+        console.log("¡Puntos subidos a la nube!");
+    }
+
+    // Función reset global
+    window.resetGlobal = function(){
+        if(confirm("⚠ PELIGRO: Esto borrará el ranking GLOBAL para todo el mundo. ¿Seguro?")) {
+            db.ref('ranking_global').remove();
+        }
     }
 </script>
 
