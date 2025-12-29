@@ -97,7 +97,7 @@
     // --- 2. CONFIGURACIÓN KICK ---
     const CHATROOM_ID = '25078682';
     const CHANNEL_SLUG = 'Bananirou';
-    const MI_FOTO_PERSONALIZADA = 'imagenes/banan.jpg'; 
+    const MI_FOTO_PERSONALIZADA = 'imagenes/banan.jpg';
     const KICK_PUSHER_KEY = '32cbd69e4b950bf97679';
     const CLUSTER = 'us2';
 
@@ -130,8 +130,19 @@
 
         // Sumar +1 directamente en la nube
         const userRef = db.ref('ranking_global/' + user);
+        
+        // --- 🛡️ AQUÍ ESTÁ EL ESCUDO ANTI-ERROR 🛡️ ---
         userRef.transaction((current_value) => {
-            return (current_value || 0) + 1;
+            // Intentamos convertir lo que sea que haya en la BD a un número entero
+            let numero = parseInt(current_value);
+            
+            // Si el resultado NO es un número (ej: era "[object Object]" o null), forzamos 0
+            if (isNaN(numero)) {
+                numero = 0;
+            }
+            
+            // Ahora seguro sumamos número con número
+            return numero + 1;
         });
     });
 
